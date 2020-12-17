@@ -8,37 +8,44 @@ using UnityEngine;
 /// </summary>
 public class Rocket : MonoBehaviour
 {
+    //  Get a reference to the RigidBody of the rocket.
+    Rigidbody rigidBody;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //  Get the reference of the rigid body. 
+        rigidBody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
         processInput();
+        
     }
 
     /// <summary>
     /// Process the input pressed.
     /// Determine whether the ship is thrusting, or rotating left or right.
     /// </summary>
-    private static void processInput()
+    private void processInput()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        //  Thrusting the rocket.
+        if(Input.GetKey(KeyCode.Space))
         {
-            print("Thrusting");
+            //  Relative force is needed so that the ship can rotate and thrust in different directions.
+            rigidBody.AddRelativeForce(Vector3.up);
         }
 
         //  Can only rotate one direction at a time.
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKey(KeyCode.A))
         {
-            print("Rotating Left");
+            transform.Rotate(Vector3.forward);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
-            print("Rotating Right"); 
+            transform.Rotate(-Vector3.forward);
         }
     }
 }
