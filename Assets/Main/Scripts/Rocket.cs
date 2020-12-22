@@ -27,24 +27,46 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        processInput();
-        
+        //  Rotate the ship according to user input.
+        Rotate();
+       
+        //  Thrusting the rocket according to user input.
+        Thrust();
+
     }
 
     /// <summary>
-    /// Process the input pressed.
-    /// Determine whether the ship is thrusting, or rotating left or right.
+    /// Determine whether the ship is to rotate left or right.
     /// </summary>
-    private void processInput()
+    private void Rotate()
     {
-        //  Thrusting the rocket.
-        if(Input.GetKey(KeyCode.Space))
+        //  Take manual control of rotation.
+        rigidBody.freezeRotation = true;
+
+        //  Can only rotate one direction at a time.
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.Rotate(Vector3.forward);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            transform.Rotate(-Vector3.forward);
+        }
+
+        //  Resume physics rotation.
+        rigidBody.freezeRotation = false;
+    }
+
+    //  Handles the rockets propulsion.
+    private void Thrust()
+    {
+        if (Input.GetKey(KeyCode.Space))
         {
             //  Relative force is needed so that the ship can rotate and thrust in different directions.
             rigidBody.AddRelativeForce(Vector3.up);
-            
+
             //  Play the thruster sound. Only play it if it isn't already playing.
-            if(!audioSource.isPlaying)
+            if (!audioSource.isPlaying)
             {
                 audioSource.Play();
             }
@@ -53,17 +75,6 @@ public class Rocket : MonoBehaviour
         {
             //  Stop the thruster sound when no longer thrusting.
             audioSource.Stop();
-        }
-
-
-        //  Can only rotate one direction at a time.
-        if(Input.GetKey(KeyCode.A))
-        {
-            transform.Rotate(Vector3.forward);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transform.Rotate(-Vector3.forward);
         }
     }
 }
