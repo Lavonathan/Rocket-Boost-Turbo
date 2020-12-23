@@ -14,6 +14,14 @@ public class Rocket : MonoBehaviour
     //  Declare the audio source variable.
     AudioSource audioSource;
 
+    //  The rotation multiplier variable.
+    [SerializeField]
+    float rotationMultiplier = 100f;
+
+    //  The rate of thrust
+    [SerializeField]
+    float thrustMultiplier = 1200f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,14 +51,17 @@ public class Rocket : MonoBehaviour
         //  Take manual control of rotation.
         rigidBody.freezeRotation = true;
 
+        //  The rotation each frame.
+        float rotationPerFrame = rotationMultiplier * Time.deltaTime;
+
         //  Can only rotate one direction at a time.
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(Vector3.forward);
+            transform.Rotate(Vector3.forward * rotationPerFrame);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(-Vector3.forward);
+            transform.Rotate(-Vector3.forward * rotationPerFrame);
         }
 
         //  Resume physics rotation.
@@ -60,10 +71,13 @@ public class Rocket : MonoBehaviour
     //  Handles the rockets propulsion.
     private void Thrust()
     {
+        //  Thrust per frame.
+        float thrustPerFrame = thrustMultiplier * Time.deltaTime;
+
         if (Input.GetKey(KeyCode.Space))
         {
             //  Relative force is needed so that the ship can rotate and thrust in different directions.
-            rigidBody.AddRelativeForce(Vector3.up);
+            rigidBody.AddRelativeForce(Vector3.up * thrustPerFrame);
 
             //  Play the thruster sound. Only play it if it isn't already playing.
             if (!audioSource.isPlaying)
