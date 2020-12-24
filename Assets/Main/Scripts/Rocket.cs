@@ -15,12 +15,10 @@ public class Rocket : MonoBehaviour
     AudioSource audioSource;
 
     //  The rotation multiplier variable.
-    [SerializeField]
-    float rotationMultiplier = 100f;
+    [SerializeField]float rotationMultiplier = 100f;
 
     //  The rate of thrust
-    [SerializeField]
-    float thrustMultiplier = 1200f;
+    [SerializeField]float thrustMultiplier = 1200f;
 
     // Start is called before the first frame update
     void Start()
@@ -44,12 +42,49 @@ public class Rocket : MonoBehaviour
     }
 
     /// <summary>
+    /// Used when the rocket collides into something solid.
+    /// </summary>
+    /// <param name="collision">The thing collided into.</param>
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                // Do nothing
+                print("O.K.");
+                break;
+            case "Fuel":
+                print("Fuel Up!");
+                break;
+            default:
+                //  Lose the game.
+                print("YOU LOSE");
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Used when the rocket passes through a trigger object.
+    /// </summary>
+    /// <param name="trigger">The trigger passed through</param>
+    private void OnTriggerEnter(Collider trigger)
+    {
+        if (trigger.gameObject.CompareTag("Fuel"))
+        {
+            print("Fuel Up!!!");
+        }
+    }
+
+    /// <summary>
     /// Determine whether the ship is to rotate left or right.
     /// </summary>
     private void Rotate()
     {
         //  Take manual control of rotation.
-        rigidBody.freezeRotation = true;
+        rigidBody.constraints = RigidbodyConstraints.FreezePositionZ 
+            | RigidbodyConstraints.FreezeRotationX 
+            | RigidbodyConstraints.FreezeRotationY 
+            | RigidbodyConstraints.FreezeRotationZ;
 
         //  The rotation each frame.
         float rotationPerFrame = rotationMultiplier * Time.deltaTime;
@@ -65,7 +100,10 @@ public class Rocket : MonoBehaviour
         }
 
         //  Resume physics rotation.
-        rigidBody.freezeRotation = false;
+        rigidBody.constraints = RigidbodyConstraints.FreezePositionZ 
+                                | RigidbodyConstraints.FreezeRotationX 
+                                | RigidbodyConstraints.FreezeRotationY;
+
     }
 
     //  Handles the rockets propulsion.
